@@ -14,6 +14,8 @@
 using std::string;
 using std::vector;
 
+const unsigned int handSize = 5;
+
 struct Card{
     unsigned int value;
     char suite;
@@ -56,11 +58,11 @@ Card makeCard(char value, char suite){
 }
 
 unsigned int isHighCard(Player &p){
-    return p.hand[4].value;
+    return p.hand[::handSize-1].value;
 }
 
 unsigned int isPair(Player &p){
-    for(unsigned int i = 4; i > 0; i--)
+    for(unsigned int i = ::handSize; i > 0; i--)
         if(p.hand[i].value == p.hand[i-1].value)
             return p.hand[i].value;
     return 0;
@@ -87,14 +89,14 @@ unsigned int isStraight(Player &p){
     for(unsigned int i = 0; i < p.hand.size()-1; i++)
         if(p.hand[i].value+1 != p.hand[i+1].value)
             return 0;
-    return p.hand[4].value;
+    return p.hand[::handSize-1].value;
 }
 
 unsigned int isFlush(Player &p){
     for(Card c : p.hand) 
         if(c.suite != p.hand[0].suite)
             return 0;
-    return p.hand[4].value;
+    return p.hand[::handSize-1].value;
 }
 
 unsigned int isFullHouse(Player &p){
@@ -131,12 +133,10 @@ vector<unsigned int> calculateHand(Player &p){
     return handResults;
 }
 
-unsigned int isTieOrWinner(vector<Card> &set1, vector<Card> &set2){ // For Some Reason, a for loop dose not work her.
-    if(set1[4].value != set2[4].value) return (set1[4].value > set2[4].value ? 1 : 2);
-    if(set1[3].value != set2[3].value) return (set1[3].value > set2[3].value ? 1 : 2);
-    if(set1[2].value != set2[2].value) return (set1[2].value > set2[2].value ? 1 : 2);
-    if(set1[1].value != set2[1].value) return (set1[1].value > set2[1].value ? 1 : 2);
-    if(set1[0].value != set2[0].value) return (set1[0].value > set2[0].value ? 1 : 2);
+unsigned int isTieOrWinner(vector<Card> &set1, vector<Card> &set2){ 
+    for(int i = ::handSize-1; i >= 0; i--)
+        if(set1[i].value != set2[i].value) 
+            return (set1[i].value > set2[i].value ? 1 : 2);
     return 0;
 }
 
@@ -173,7 +173,7 @@ int main(){
         char suit, value;
         
         while(tableCards >> value >> suit)
-            if(player1.hand.size() != 5)  player1.hand.push_back(makeCard(value, suit));
+            if(player1.hand.size() != ::handSize)  player1.hand.push_back(makeCard(value, suit));
             else                          player2.hand.push_back(makeCard(value, suit));
 
         returnWinner(player1, player2);
