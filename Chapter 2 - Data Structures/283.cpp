@@ -1,4 +1,4 @@
-/*	@JUDGE_ID: 1274804
+/*  @JUDGE_ID: 1274804
     Problem Number: 110203/10050
     Language: C++
     Hartals
